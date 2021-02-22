@@ -1,0 +1,7 @@
+name: Lambdas
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:

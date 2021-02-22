@@ -1,22 +1,45 @@
-name: Terraform
+name: "Terraform"
 
 on:
-  workflow_run:
-    workflows: ["Lambdas"]
-    release: 
-      types: [released]
-    types:
-      - completed
+  push:
+    branches:
+      - master
+  pull_request:
 
+# TODO: make jobs run in sequence
 jobs:
+  # lambda-first:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@master
+  #     - run: cd getUserData && npm install
+  #     - run: cd getUserData && zip -r ../lambda.zip .
+  #     - uses: stcalica/update-lambda@0.0.2
+  #       with:
+  #         package: lambda.zip
+  #         function-name: getUserData
+  #         AWS_REGION: ${{ secrets.AWS_REGION }}
+  #         AWS_SECRET_ID: ${{ secrets.AWS_SECRET_ID }}
+  #         AWS_SECRET_KEY: ${{ secrets.AWS_SECRET_KEY }}
+  # lambda-second:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@master
+  #     - run: zip -j lambda.zip ./putUserData/index.js
+  #     - uses: stcalica/update-lambda@0.0.2
+  #       with:
+  #         package: lambda.zip
+  #         function-name: putUserData
+  #         AWS_REGION: ${{ secrets.AWS_REGION }}
+  #         AWS_SECRET_ID: ${{ secrets.AWS_SECRET_ID }}
+  #         AWS_SECRET_KEY: ${{ secrets.AWS_SECRET_KEY }}
   terraform:
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    name: "Terraform"
+    # needs: [lambda-first, lambda-second]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - name: Echo
-        run: echo "HelloWorld!" 
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
@@ -34,12 +57,12 @@ jobs:
 
       - name: Terraform Plan
         id: plan
-        if: github.event_name == 'release'
+        if: github.event_name == 'pull_request'
         run: terraform plan -no-color
         continue-on-error: true
 
       - uses: actions/github-script@0.9.0
-        if: github.event_name == 'release'
+        if: github.event_name == 'pull_request'
         env:
           PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"
         with:

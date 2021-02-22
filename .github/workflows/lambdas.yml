@@ -5,3 +5,10 @@ on:
     branches:
       - master
   pull_request:
+
+jobs:
+  lambdas:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - run: echo "Hello World!"

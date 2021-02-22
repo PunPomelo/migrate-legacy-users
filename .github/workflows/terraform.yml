@@ -8,19 +8,19 @@ on:
 
 # TODO: make jobs run in sequence
 jobs:
-  # lambda-first:
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: actions/checkout@master
-  #     - run: cd getUserData && npm install
-  #     - run: cd getUserData && zip -r ../lambda.zip .
-  #     - uses: stcalica/update-lambda@0.0.2
-  #       with:
-  #         package: lambda.zip
-  #         function-name: getUserData
-  #         AWS_REGION: ${{ secrets.AWS_REGION }}
-  #         AWS_SECRET_ID: ${{ secrets.AWS_SECRET_ID }}
-  #         AWS_SECRET_KEY: ${{ secrets.AWS_SECRET_KEY }}
+  lambda-migrate-legacy-users:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - run: cd migrateFirebaseUsers
+      - run: cd migrateFirebaseUsers && zip -r ../lambda.zip .
+      - uses: stcalica/update-lambda@0.0.2
+        with:
+          package: lambda.zip
+          function-name: migrateFirebaseUsers
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+          AWS_SECRET_ID: ${{ secrets.AWS_SECRET_ID }}
+          AWS_SECRET_KEY: ${{ secrets.AWS_SECRET_KEY }}
   # lambda-second:
   #   runs-on: ubuntu-latest
   #   steps:
@@ -36,6 +36,7 @@ jobs:
   terraform:
     name: "Terraform"
     # needs: [lambda-first, lambda-second]
+    needs: [lambda-first]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout

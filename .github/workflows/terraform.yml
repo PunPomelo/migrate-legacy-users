@@ -35,7 +35,7 @@ jobs:
   terraform:
     name: "Terraform"
     # needs: [lambda-first, lambda-second]
-    needs: [lambda-first]
+    needs: [lambda-migrate-legacy-users]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout

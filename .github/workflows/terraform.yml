@@ -1,16 +1,14 @@
 name: Terraform
 
 on:
-  workflow_run:
-    workflows: ["Lambdas"]
-    release: 
-      types: [released]
-    types:
-      - completed
+  push:
+    branches:
+      - master
+  pull_request:
 
 jobs:
   terraform:
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    # if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout

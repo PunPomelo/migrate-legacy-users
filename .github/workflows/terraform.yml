@@ -14,8 +14,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       - name: Echo github event
-        run: echo "HelloWorld!" 
-        # run: echo `github event name = ${{ github.event_name}}`
+        run: echo `github event name = ${{ github.event_name}}`
+        # run: echo "HelloWorld!" 
 
       # - name: Setup Terraform
       #   uses: hashicorp/setup-terraform@v1

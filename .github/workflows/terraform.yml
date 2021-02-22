@@ -6,7 +6,6 @@ on:
       - master
   pull_request:
 
-# TODO: make jobs run in sequence
 jobs:
   lambda-migrate-legacy-users:
     runs-on: ubuntu-latest

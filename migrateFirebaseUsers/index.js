@@ -1,7 +1,7 @@
 'use strict';
 const AWS = require('aws-sdk');
 
-exports.handler = function (event, context, callback) {
+exports.handler = (event, context, callback) => {
   console.log('HelloWorld!!!!');
   // console.log(JSON.stringify(`Event: event`));
   // Lambda Code Here

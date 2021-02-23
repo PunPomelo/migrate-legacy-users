@@ -7,19 +7,33 @@ on:
   pull_request:
 
 jobs:
-  lambda-migrate-legacy-users:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@master
-      - run: cd migrateFirebaseUsers
-      - run: cd migrateFirebaseUsers && zip -r ../lambda.zip .
-      - uses: stcalica/update-lambda@0.0.2
-        with:
-          package: lambda.zip
-          function-name: migrateFirebaseUsers
-          AWS_REGION: ${{ secrets.AWS_REGION }}
-          AWS_SECRET_ID: ${{ secrets.AWS_SECRET_ID }}
-          AWS_SECRET_KEY: ${{ secrets.AWS_SECRET_KEY }}
+  upload:
+      name: 'Upload lambdas to s3'
+      runs-on: ubuntu-latest
+      steps:
+        - uses: actions/checkout@master
+        - run: cd lambdas
+        - run: cd lambdas && zip -r ../lambda.zip .
+        - uses: shallwefootball/s3-upload-action@master
+          with:
+            aws_key_id: ${{ secrets.AWS_KEY_ID }}
+            aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY}}
+            aws_bucket: ${{ secrets.AWS_BUCKET }}
+            source_dir: 'lambda.zip'
+
+  # lambda-migrate-legacy-users:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@master
+  #     - run: cd migrateFirebaseUsers
+  #     - run: cd migrateFirebaseUsers && zip -r ../lambda.zip .
+  #     - uses: stcalica/update-lambda@0.0.2
+  #       with:
+  #         package: lambda.zip
+  #         function-name: migrateFirebaseUsers
+  #         AWS_REGION: ${{ secrets.AWS_REGION }}
+  #         AWS_SECRET_ID: ${{ secrets.AWS_SECRET_ID }}
+  #         AWS_SECRET_KEY: ${{ secrets.AWS_SECRET_KEY }}
   # lambda-second:
   #   runs-on: ubuntu-latest
   #   steps:
@@ -35,7 +49,6 @@ jobs:
   terraform:
     name: "Terraform"
     # needs: [lambda-first, lambda-second]
-    needs: [lambda-migrate-legacy-users]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout

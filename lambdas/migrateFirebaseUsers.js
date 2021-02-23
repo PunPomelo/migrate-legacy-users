@@ -1,11 +1,7 @@
 'use strict';
 const AWS = require('aws-sdk');
+const s3 = new AWS.S3();
 
-exports.handler = (event, context, callback) => {
-  console.log('HelloWorld!!!!');
-  console.log(event);
-  // console.log(JSON.stringify(`Event: event`));
-  // Lambda Code Here
-  // context.succeed('Success!')
-  // context.fail('Failed!')
+exports.handler = async (event, context, callback) => {
+  console.log('Event:', event);
 };

@@ -53,8 +53,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
-      - run: cd migrateFirebaseUsers
-      - run: cd migrateFirebaseUsers && zip -r ../lambda.zip .
+      - run: cd lambdas
+      - run: cd lambdas && zip -r ../lambda.zip .
       - uses: stcalica/update-lambda@0.0.2
         with:
           package: lambda.zip
